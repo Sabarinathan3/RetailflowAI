@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: retailflow-api-server
+    env: node
+    rootDir: api-server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: retailflow-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+    
+databases:
+  - name: retailflow-db
+    databaseName: retailflow
+    user: retailflow_user
+    plan: free
