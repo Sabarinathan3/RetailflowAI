@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { ApiResponse } from '@/types/api.types';
 import { useAuthStore } from '@/store/auth.store';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'https://retailflow-api-server.onrender.com/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
