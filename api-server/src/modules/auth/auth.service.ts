@@ -23,7 +23,7 @@ export class AuthService {
       throw new ConflictError('Email is already registered');
     }
 
-    const hashedPassword = await bcrypt.hash(input.password, 12);
+    const hashedPassword = await bcrypt.hash(input.password, 10);
 
     const { shop, branch, user } = await this.repo.createShopWithOwner({
       shopName: input.shopName,

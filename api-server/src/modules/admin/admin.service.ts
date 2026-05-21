@@ -50,7 +50,7 @@ export class AdminService {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(input.password, 12);
+    const hashedPassword = await bcrypt.hash(input.password, 10);
 
     // Create admin user
     const adminUser = await this.repo.createAdminUser({
