@@ -1,6 +1,7 @@
 import { apiClient } from './client';
 import type { ApiResponse, PaginationParams } from '@/types/api.types';
 import type { CreditLedger, CreditPayment, AddCreditPaymentInput, CreditSummary } from '@/types/credit.types';
+import type { PaymentMode } from '@/types/enums';
 
 export const creditApi = {
   /** List all ledgers with optional status/customer filter + pagination */
@@ -33,4 +34,24 @@ export const creditApi = {
    */
   getReminder: (id: string) =>
     apiClient.get<ApiResponse<{ whatsappLink: string; customerName: string; customerPhone: string; outstandingAmount: number }>>(`/credit-ledger/${id}/reminder`).then((r) => r.data),
+
+  /** Record a payment using unified payCredit data structure */
+  payCredit: (data: {
+    ledgerId: string;
+    amount: number;
+    paymentMode: PaymentMode;
+    referenceId?: string;
+    notes?: string;
+  }) => {
+    const { ledgerId, amount, paymentMode, referenceId, notes } = data;
+    let combinedNotes = notes;
+    if (referenceId) {
+      combinedNotes = notes ? `${notes} (Ref: ${referenceId})` : `Ref: ${referenceId}`;
+    }
+    return creditApi.addPayment(ledgerId, {
+      amount,
+      paymentMode,
+      notes: combinedNotes,
+    });
+  },
 };

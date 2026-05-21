@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAdminStore } from '@/store/admin.store';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface ProtectedAdminRouteProps {
   children: ReactNode;

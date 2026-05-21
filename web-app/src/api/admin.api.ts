@@ -9,6 +9,7 @@ import type {
   AdminAuthResponse,
   AdminLoginInput,
   AdminRegisterInput,
+  AdminUser,
   ActivityLogResponse,
   DashboardAnalytics,
   InventoryReportResponse,
@@ -55,8 +56,8 @@ export const adminApi = {
     return unwrapAdminData(response);
   },
 
-  listAdminUsers: async (params?: PaginationParams): Promise<PaginatedResponse<unknown>> => {
-    const response = await adminApiClient.get<ApiResponse<unknown[]>>('/admin/users', { params });
+  listAdminUsers: async (params?: PaginationParams): Promise<PaginatedResponse<AdminUser>> => {
+    const response = await adminApiClient.get<ApiResponse<AdminUser[]>>('/admin/users', { params });
     return unwrapAdminList(response);
   },
 
@@ -74,7 +75,9 @@ export const adminApi = {
     await adminApiClient.delete(`/admin/users/${id}`);
   },
 
-  getActivityLogs: async (params?: PaginationParams): Promise<PaginatedResponse<ActivityLogResponse>> => {
+  getActivityLogs: async (
+    params?: PaginationParams & { action?: string; resource?: string }
+  ): Promise<PaginatedResponse<ActivityLogResponse>> => {
     const response = await adminApiClient.get<ApiResponse<ActivityLogResponse[]>>('/admin/logs', {
       params,
     });

@@ -1,4 +1,4 @@
-import type { CreditStatus } from './enums';
+import type { CreditStatus, PaymentMode } from './enums';
 import type { Customer } from './customer.types';
 import type { Invoice } from './billing.types';
 
@@ -36,7 +36,7 @@ export interface CreditPayment {
 
 export interface AddCreditPaymentInput {
   amount: number;
-  paymentMode: 'CASH' | 'UPI' | 'CARD';
+  paymentMode: PaymentMode;
   notes?: string;
 }
 

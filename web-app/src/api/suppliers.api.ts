@@ -37,7 +37,7 @@ export const suppliersApi = {
 
   analyzeRisk: (id: string) =>
     apiClient
-      .post<ApiResponse<{ riskStatus: string, tags: string[], insights: string }>>(`/suppliers/${id}/ai-risk`)
+      .post<ApiResponse<{ riskStatus: 'LOW' | 'MEDIUM' | 'HIGH', tags: string[], insights: string }>>(`/suppliers/${id}/ai-risk`)
       .then((r) => r.data),
 
   // ── Ledgers ────────────────────────────────────────────────────────────
