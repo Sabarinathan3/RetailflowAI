@@ -9,9 +9,25 @@ import { scheduleRepeatableJobs } from './queues';
 
 async function bootstrap() {
   try {
-    // Test database connection
-    await prisma.$connect();
-    logger.info('✅ Database connected');
+    // Test database connection with retry logic
+    const maxDbRetries = 5;
+    let dbAttempt = 0;
+    while (dbAttempt < maxDbRetries) {
+      try {
+        dbAttempt++;
+        await prisma.$connect();
+        logger.info('✅ Database connected successfully');
+        break;
+      } catch (err: any) {
+        logger.warn(`⚠️  Database connection attempt ${dbAttempt}/${maxDbRetries} failed: ${err.message}`);
+        if (dbAttempt >= maxDbRetries) {
+          logger.error('❌ Max database connection retries reached. Exiting...');
+          throw err;
+        }
+        // Wait 2 seconds before retrying
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    }
 
     // Initialize Redis (optional — graceful fallback)
     getRedis();

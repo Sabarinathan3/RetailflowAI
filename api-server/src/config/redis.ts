@@ -4,16 +4,31 @@ import { logger } from './logger';
 
 let redis: Redis | null = null;
 
+export function isRedisEnabled(): boolean {
+  if (!env.REDIS_URL) return false;
+
+  // Safeguard: If we are running in production (like Render), and REDIS_URL
+  // points to localhost or 127.0.0.1, we treat Redis as disabled to prevent crashing.
+  if (
+    env.NODE_ENV === 'production' &&
+    (env.REDIS_URL.includes('localhost') || env.REDIS_URL.includes('127.0.0.1'))
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 export function getRedis(): Redis | null {
   if (redis) return redis;
 
-  if (!env.REDIS_URL) {
-    logger.warn('⚠️  REDIS_URL not set — Redis features disabled');
+  if (!isRedisEnabled()) {
+    logger.warn('⚠️  Redis is disabled — running in standalone mode (no-cache)');
     return null;
   }
 
   try {
-    redis = new Redis(env.REDIS_URL, {
+    redis = new Redis(env.REDIS_URL!, {
       maxRetriesPerRequest: 3,
       retryStrategy(times) {
         if (times > 3) {

@@ -31,12 +31,18 @@ export const backgroundWorker = createWorker('background-jobs', async (job: Job)
   }
 });
 
-logger.info('👷 BullMQ Worker started successfully for queue: background-jobs');
+if (backgroundWorker) {
+  logger.info('👷 BullMQ Worker started successfully for queue: background-jobs');
+} else {
+  logger.warn('⚠️  BullMQ Worker not started because Redis is disabled.');
+}
 
 // Handle graceful shutdown
 process.on('SIGTERM', async () => {
   logger.info('Shutting down worker...');
-  await backgroundWorker.close();
+  if (backgroundWorker) {
+    await backgroundWorker.close();
+  }
   await prisma.$disconnect();
   const redis = getRedis();
   if (redis) redis.disconnect();
